@@ -18,5 +18,7 @@
 //        ':name' => ['index/hello', ['method' => 'post']],
 //    ],
 //];
+use think\Route;
 
+Route::get('banner/:id','api/v1.Banner/getbanner');
 
