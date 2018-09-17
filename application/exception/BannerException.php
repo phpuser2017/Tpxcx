@@ -8,8 +8,6 @@
 
 namespace app\exception;
 
-use app\exception\BaseException;
-
 class BannerException extends BaseException
 {
     public $code=400;

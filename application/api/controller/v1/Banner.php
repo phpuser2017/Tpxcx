@@ -25,6 +25,7 @@ class Banner
         if(!$bannres){
             throw new BannerException();
         }
-        return $bannres;
+//        dump($bannres);
+        return json($bannres);
     }
 }
