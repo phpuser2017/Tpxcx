@@ -7,7 +7,9 @@
  */
 
 namespace app\api\controller\v1;
-use think\Validate;
+use app\api\validate\Idvaliadet;
+use app\api\model\Banner as BannerModel;
+use app\exception\BannerException;
 
 class Banner
 {
@@ -18,17 +20,11 @@ class Banner
      * http GET
      * */
     public function getbanner($id){
-        $data = [
-            'name' => 'thinkphp',
-            'email' => 'thinkphp@qq.com'
-        ];
-        $validate = new Validate([
-            'name' => 'require|min:25',
-            'email' => 'email'
-        ]);
-        $result=$validate->check($data);
-        if (!$validate->check($data)) {
-            dump($validate->getError());
+        (new Idvaliadet())->goCheck();
+        $bannres=BannerModel::getbannerid($id);
+        if(!$bannres){
+            throw new BannerException();
         }
+        return $bannres;
     }
 }
