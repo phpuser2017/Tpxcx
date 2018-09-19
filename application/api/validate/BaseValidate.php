@@ -28,7 +28,6 @@ class BaseValidate extends Validate
                 'code'=>400,
                 'errorcode'=>10002
             ]);
-//            $err->msg=$this->error;
             throw $err;
         }else{
             return true;

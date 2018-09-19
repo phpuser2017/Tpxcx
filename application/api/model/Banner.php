@@ -7,21 +7,18 @@
  */
 namespace app\api\model;
 
-use think\Db;
-use think\Exception;
+use think\Model;
 
-class Banner
+class Banner extends Model
 {
+    //定义关联
+    public function banneritems(){
+        return $this->hasMany('BannerItem','banner_id','id');
+    }
+    //封装调用模型
     public static function getbannerid($id){
-//        $banner=Db::query('select * from banner_item where banner_id=?',[$id]);
-//        $banner=Db::table('banner_item')->where('banner_id','=',$id)->select();
-        $banner=Db::table('banner_item')
-            ->where('id','=',3)
-		    ->select();
-        return $banner;
-        
-//        return null;
-    
+        $bannres=self::with(['banneritems','banneritems.img'])->find($id);
+        return $bannres;
     }
     
 }

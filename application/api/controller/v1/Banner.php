@@ -7,8 +7,9 @@
  */
 
 namespace app\api\controller\v1;
-use app\api\validate\Idvaliadet;
+
 use app\api\model\Banner as BannerModel;
+use app\api\validate\Idvaliadet;
 use app\exception\BannerException;
 
 class Banner
@@ -19,13 +20,14 @@ class Banner
      * url banner/:id
      * http GET
      * */
-    public function getbanner($id){
+    public function getbanner($id)
+    {
         (new Idvaliadet())->goCheck();
-        $bannres=BannerModel::getbannerid($id);
-        if(!$bannres){
+        //调用模型方法查询
+        $bannres = BannerModel::getbannerid($id);
+        if (!$bannres) {
             throw new BannerException();
         }
-//        dump($bannres);
         return json($bannres);
     }
 }
