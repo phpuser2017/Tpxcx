@@ -7,9 +7,14 @@
  */
 
 namespace app\api\model;
-use think\Model;
 
-class Image extends Model
+class Image extends BaseModel
 {
-    
+    //显示需要显示的字段
+    protected $visible=['url'];
+    //获取需要处理的字段
+    public function getUrlAttr($value,$data){
+        //调用基类中图片域名处理方法
+        return $this->urlfix($value,$data);
+    }
 }

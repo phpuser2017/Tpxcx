@@ -7,10 +7,11 @@
  */
 namespace app\api\model;
 
-use think\Model;
 
-class Banner extends Model
+class Banner extends BaseModel
 {
+    //隐藏不需要显示的字段
+    protected $hidden=['delete_time','update_time'];
     //定义关联
     public function banneritems(){
         return $this->hasMany('BannerItem','banner_id','id');
