@@ -19,6 +19,6 @@
 //    ],
 //];
 use think\Route;
-
-Route::get('api/v1/banner/:id','api/v1.Banner/getbanner');
+//自动分别版本访问
+Route::get('api/:version/banner/:id','api/:version.Banner/getbanner');
 
