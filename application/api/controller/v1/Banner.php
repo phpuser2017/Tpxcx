@@ -24,7 +24,7 @@ class Banner
     {
         (new Idvaliadet())->goCheck();
         //调用模型方法查询
-        $bannres = BannerModel::getbannerid($id);
+        $bannres = BannerModel::with(['banneritems','banneritems.img'])->find($id);
         if (!$bannres) {
             throw new BannerException();
         }
