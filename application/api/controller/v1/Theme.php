@@ -14,7 +14,6 @@
 
 namespace app\api\controller\v1;
 
-<<<<<<< HEAD
 use app\api\model\Theme as ThemeModel;
 use app\api\validate\Idscheck;
 use app\api\validate\Idvaliadet;
@@ -41,10 +40,4 @@ class Theme
         }
         return json($product);
     }
-=======
-
-class Theme
-{
-    
->>>>>>> 429fd28d766ff72f32d5cd8a476ddced02097709
 }
