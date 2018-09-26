@@ -26,7 +26,7 @@ class Theme
         $ids=explode(',',$ids);
         //调用模型方法查询
         $themes = ThemeModel::getthemes($ids);
-        if (!$themes) {
+        if ($themes->isEmpty()) {
             throw new ThemeException();
         }
         return json($themes);

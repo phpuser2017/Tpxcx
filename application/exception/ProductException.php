@@ -9,7 +9,7 @@
 namespace app\exception;
 
 
-class NewproductException extends BaseException
+class ProductException extends BaseException
 {
     public $code=400;
     public $msg='没有最新商品';

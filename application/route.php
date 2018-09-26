@@ -27,4 +27,10 @@ Route::get('api/:version/getthemes','api/:version.Theme/getthemes');//主题
 //http://tp/api/v1/getthemes/1
 Route::get('api/:version/getthemes/:id','api/:version.Theme/getthemedetail');//主题详情获取
 //http://tp/api/v1/getnewproducts/1
-Route::get('api/:version/getnewproducts/:count','api/:version.Newproduct/getnewproducts');//最新商品获取
+Route::get('api/:version/getnewproducts/:count','api/:version.Product/getnewproducts');//最新商品获取
+//http://tp/api/v1/getcategory
+Route::get('api/:version/getcategory','api/:version.Category/getCategories');//分类
+//http://tp/api/v1/getproducty/2
+Route::get('api/:version/getproducty/:id','api/:version.Product/getallproduct');//分类中的商品
+//http://tp/api/v1/token/user
+Route::post('api/:version/token/user','api/:version.Token/getToken');//分类中的商品

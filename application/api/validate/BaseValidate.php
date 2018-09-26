@@ -42,4 +42,13 @@ class BaseValidate extends Validate
             return false;
         }
     }
+    //自定义验证参数code
+    protected function Isnotempty($value, $rule = '', $data = '', $field = '')
+    {
+        if (empty($value)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

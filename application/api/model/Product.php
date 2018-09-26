@@ -26,4 +26,9 @@ class Product extends BaseModel
         $products=self::limit($count)->order('create_time desc')->select();
         return $products;
     }
+    //查询分类下商品
+    public static function getallproduct($id){
+        $all=self::where('category_id','=',$id)->select();
+        return $all;
+    }
 }
