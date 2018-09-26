@@ -20,6 +20,11 @@
 //];
 use think\Route;
 //动态api版本识别
+//http://tp/api/v1/banner/1
 Route::get('api/:version/banner/:id','api/:version.Banner/getbanner');//轮播图
+//http://tp/api/v1/getthemes?ids=1,2,3
 Route::get('api/:version/getthemes','api/:version.Theme/getthemes');//主题
+//http://tp/api/v1/getthemes/1
 Route::get('api/:version/getthemes/:id','api/:version.Theme/getthemedetail');//主题详情获取
+//http://tp/api/v1/getnewproducts/1
+Route::get('api/:version/getnewproducts/:count','api/:version.Newproduct/getnewproducts');//最新商品获取

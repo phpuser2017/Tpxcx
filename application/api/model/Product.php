@@ -22,4 +22,8 @@ class Product extends BaseModel
     public function getMainImgUrlAttr($value,$data){
         return $this->urlfix($value,$data);
     }
+    public static function getnewproduct($count){
+        $products=self::limit($count)->order('create_time desc')->select();
+        return $products;
+    }
 }
