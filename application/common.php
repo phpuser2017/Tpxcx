@@ -26,7 +26,17 @@ function curl_get($url,&$httpcode=0){
     curl_close($cu);
     return $fileconnect;
 }
-
+/*产生token需要的随机字符串
+ * */
+function getrandchars($length){
+    $str = null;
+    $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+    $max = strlen($strPol) - 1;
+    for ($i = 0;$i < $length;$i++) {
+        $str .= $strPol[rand(0, $max)];
+    }
+    return $str;
+}
 //function curl_get($url){
 //    $curl = curl_init();
 //    curl_setopt($curl, CURLOPT_URL, $url);

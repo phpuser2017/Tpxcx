@@ -16,19 +16,20 @@ use think\Exception;
 class UserToken extends Token
 {
     protected $code;
-    protected $wxappid;
-    protected $wxappsecret;
+    protected $appid;
+    protected $appsecret;
     protected $loginurl;
+    //微信获取openid的配置
     function __construct($code)
     {
         $this->code=$code;
-        $this->wxappid=config('wxconfig.appid');
-        $this->wxappsecret=config('wxconfig.secret');
+        $this->appid=config('wxconfig.appid');
+        $this->appsecret=config('wxconfig.secret');
         //https://api.weixin.qq.com/sns/jscode2session?appid=wxcf0ae424dbe07b84&secret=43f15458902b651cac9344fff7b90c0c&js_code=06102OP01Cf3KZ1He0S01MHRP0102OPq&grant_type=authorization_code
-        $this->loginurl=sprintf(config('wxconfig.loginurl'),$this->wxappid,$this->wxappsecret,$this->code);
+        $this->loginurl=sprintf(config('wxconfig.loginurl'),$this->appid,$this->appsecret,$this->code);
     }
     //获取openid、session_key
-    public function tokenget(){
+    public function getopenid(){
         $login=curl_get($this->loginurl);
         $result=json_decode($login,true);
        /*
@@ -67,7 +68,10 @@ class UserToken extends Token
            //不存在则新增一条数据
             $uid=$this->insertuser($result['openid']);
         }
-       $cachevalue=$this->preparecachevalue($result,$uid);
+        //将数据写入缓存（加快访问速度、减小数据库压力）
+        //数组形式：key=token,value=result(获取到的token信息),uid(用户唯一id),scope(自定义权限级别)
+        //通过token可以在缓存中获取到对应的token信息、权限级别等用户信息
+        $cachevalue=$this->preparecachevalue($result,$uid);
     }
     //添加数据
     private function insertuser($openid){
@@ -76,10 +80,22 @@ class UserToken extends Token
         ]);
         return $new->id;
     }
-    //准备生成令牌需要的值
+    /*准备生成令牌需要的值
+     * @result(获取到的token信息)
+     * @uid(用户唯一id)
+     * @scope(自定义权限级别)
+     * */
     private function preparecachevalue($result,$uid){
         $cachedata=$result;
         $cachedata['uid']=$uid;
         $cachedata['scope']=16;
+        //将准备好的数据返回
+        return $cachedata;
+    }
+    /*将数据写入缓存
+     * */
+    private function savecachedata($result,$uid){
+        //产生token
+        $cachekey=self::generateToken();
     }
 }

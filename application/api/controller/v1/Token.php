@@ -14,10 +14,11 @@ use app\api\validate\CodeCheck;
 
 class Token
 {
+    //传入code获取token
     public function getToken($code=''){
         (new CodeCheck())->goCheck();
         $tokenservice=new UserToken($code);
-        $token=$tokenservice->tokenget();
+        $token=$tokenservice->getopenid();
         return $token;
     }
 }
