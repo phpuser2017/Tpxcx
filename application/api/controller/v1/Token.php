@@ -19,6 +19,8 @@ class Token
         (new CodeCheck())->goCheck();
         $tokenservice=new UserToken($code);
         $token=$tokenservice->getopenid();
-        return $token;
+        return [
+            'token'=>$token
+        ];
     }
 }

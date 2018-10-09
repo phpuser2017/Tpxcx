@@ -72,6 +72,9 @@ class UserToken extends Token
         //数组形式：key=token,value=result(获取到的token信息),uid(用户唯一id),scope(自定义权限级别)
         //通过token可以在缓存中获取到对应的token信息、权限级别等用户信息
         $cachevalue=$this->preparecachevalue($result,$uid);
+        //生成token写入缓存并将token返回
+        $token=$this->savecachedata($cachevalue);
+        return $token;
     }
     //添加数据
     private function insertuser($openid){
@@ -94,8 +97,20 @@ class UserToken extends Token
     }
     /*将数据写入缓存
      * */
-    private function savecachedata($result,$uid){
+    private function savecachedata($cachevalue){
         //产生token
-        $cachekey=self::generateToken();
+        $key=self::generateToken();
+        $value=json_encode($cachevalue);
+        $token_vld=config('setting.token_vld');
+        //保存到缓存
+        $cache=cache($key,$value,$token_vld);
+        if(!$cache){
+            throw new TokenException([
+                'msg'=>'服务器缓存异常',
+                'errorcode'=>'10005'
+            ]);
+        }
+        //将令牌返回给客户端
+        return $key;
     }
 }
