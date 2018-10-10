@@ -31,4 +31,23 @@ class Product extends BaseModel
         $all=self::where('category_id','=',$id)->select();
         return $all;
     }
+    //商品详情模型关联
+    public function imgs(){
+        return $this->hasMany('ProductImage','product_id','id');
+    }
+    public function property(){
+        return $this->hasMany('ProductProperty','product_id','id');
+    }
+    //查询商品详情
+    public static function getproductdetail($id){
+        //模型中使用闭包函数进行数据处理(对关联模型中的关联模型中的字段进行排序)
+        $detail=self::with(['property'])
+            ->with([
+                'imgs'=>function($query){
+                    $query->with(['detailimg'])->order('order','asc');
+                }
+            ])
+            ->find($id);
+        return $detail;
+    }
 }

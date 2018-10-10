@@ -29,7 +29,7 @@ class Theme extends BaseModel
         //belongsToMany('关联模型名','中间表名','外键名','当前模型关联键名',['模型别名定义']);
         return $this->belongsToMany('Product','theme_product','product_id','theme_id');
     }
-    //封装主题关联查询
+    //封装主题图片关联查询
     public static function getthemes($ids){
         $theme=self::with(['Topicimg','Headimg'])->select($ids);
         return $theme;

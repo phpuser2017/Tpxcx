@@ -40,8 +40,13 @@ class Product
         return $allproduct;
     }
     //点击商品显示详情
-    public function productdetail(){
+    public function productdetail($id){
         (new Idvaliadet())->goCheck();
-        
+        $productdata=ProductModel::getproductdetail($id);
+        if(!$productdata){
+            throw new ProductException();
+        }
+//        $allproduct=$allproduct->hidden(['summary','img_id']);
+        return $productdata;
     }
 }
