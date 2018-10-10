@@ -46,7 +46,7 @@ class UserToken extends Token
                 $this->Loginerror($result);
             }else{
                 //获取到openid进行授权
-                $this->grant($result);
+                return $this->grant($result);
             }
         }
     }

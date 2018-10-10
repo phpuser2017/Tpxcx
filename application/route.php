@@ -32,5 +32,7 @@ Route::get('api/:version/getnewproducts/:count','api/:version.Product/getnewprod
 Route::get('api/:version/getcategory','api/:version.Category/getCategories');//分类
 //http://tp/api/v1/getproducty/2
 Route::get('api/:version/getproducty/:id','api/:version.Product/getallproduct');//分类中的商品
+//http://tp/api/v1/getone/2
+Route::get('api/:version/getone/:id','api/:version.Product/productdetail');//点击商品商品详情
 //http://tp/api/v1/token/user
-Route::post('api/:version/token/user','api/:version.Token/getToken');//分类中的商品
+Route::post('api/:version/token/user','api/:version.Token/getToken');//获取token

@@ -16,6 +16,7 @@ use app\exception\ProductException;
 
 class Product
 {
+    //最新商品
     public function getnewproducts($count=12){
         (new Productnumcheck())->goCheck();
         $products = ProductModel::getnewproduct($count);
@@ -27,6 +28,7 @@ class Product
         $products=$products->hidden(['summary','img_id']);
         return json($products);
     }
+    //获取所有商品
     public function getallproduct($id){
         (new Idvaliadet())->goCheck();
         //查询商品
@@ -36,5 +38,10 @@ class Product
         }
         $allproduct=$allproduct->hidden(['summary','img_id']);
         return $allproduct;
+    }
+    //点击商品显示详情
+    public function productdetail(){
+        (new Idvaliadet())->goCheck();
+        
     }
 }
