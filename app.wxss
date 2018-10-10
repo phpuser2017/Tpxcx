@@ -1,0 +1,4 @@
+/**app.wxss**/
+.btn{
+  margin: 50rpx 40rpx
+}

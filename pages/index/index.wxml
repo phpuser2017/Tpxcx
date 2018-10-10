@@ -1,0 +1,7 @@
+<!--index.wxml-->
+<button class='btn' type="primary" bindtap="gettoken"> 申请令牌 </button>
+<button class='btn' type="primary" bindtap="getsupertoken"> 申请Super令牌 </button>
+<button class='btn' type="primary" bindtap="pay"> 支付 </button>
+<button class='btn' type="primary" bindtap="send"> 发货 </button>
+<button class='btn' type="primary" bindtap="fromid"> 表单ID </button>
+<button class='btn' type="primary" bindtap="checklogin"> 检查登陆状态 </button>
