@@ -51,4 +51,29 @@ class BaseValidate extends Validate
             return true;
         }
     }
+    //自定义验证手机号
+    protected function IsMobile($value)
+    {
+        $rule = '^1(3|4|5|7|8)[0-9]\d{8}$^';
+        $result = preg_match($rule, $value);
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //对传递的参数进行过滤
+    public function getPostDataByRule($array){
+        if(array_key_exists('user_id',$array) || array_key_exists('uid',$array)){
+            throw new ParamExcepotion([
+                'msg'=>'参数中含有非法参数user_id或uid'
+            ]);
+        }
+        $newarray=[];
+        //获取对应验证器中设置的参数规则对应的参数名进行遍历
+        foreach ($this->rule as $key=>$value){
+            $newarray[$key]=$array[$key];
+        }
+        return $newarray;
+    }
 }

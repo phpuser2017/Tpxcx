@@ -45,3 +45,5 @@ Route::get('api/:version/producty/:id','api/:version.Product/productdetail');//�
 });*/
 //http://tp/api/v1/token/user
 Route::post('api/:version/token/user','api/:version.Token/getToken');//获取token
+//http://tp/api/v1/addressedit
+Route::post('api/:version/addressedit','api/:version.Address/EditAddress');//新增编辑地址
