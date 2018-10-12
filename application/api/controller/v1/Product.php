@@ -46,7 +46,6 @@ class Product
         if(!$productdata){
             throw new ProductException();
         }
-//        $allproduct=$allproduct->hidden(['summary','img_id']);
         return $productdata;
     }
 }

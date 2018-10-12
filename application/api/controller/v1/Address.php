@@ -9,14 +9,19 @@
 namespace app\api\controller\v1;
 
 
+use app\api\controller\BaseController;
 use app\api\model\User;
-use app\api\validate\AddressEdit;
 use app\api\service\Token as TokenService;
+use app\api\validate\AddressEdit;
 use app\exception\SuccessMsg;
 use app\exception\UserException;
 
-class Address
+class Address extends BaseController
 {
+    //前置操作验证基础权限
+    protected $beforeActionList=[
+        'CheckBaseScope'=>['only'=>'EditAddress']
+    ];
     public function EditAddress(){
         $addressValidate=new AddressEdit();
         $addressValidate->goCheck();

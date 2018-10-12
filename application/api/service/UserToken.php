@@ -10,6 +10,7 @@ namespace app\api\service;
 
 
 use app\api\model\User;
+use app\enum\ScopeEnum;
 use app\exception\WxException;
 use think\Exception;
 
@@ -91,7 +92,9 @@ class UserToken extends Token
     private function preparecachevalue($result,$uid){
         $cachedata=$result;
         $cachedata['uid']=$uid;
-        $cachedata['scope']=16;
+        //scope 区别app与cms用户的管理权限(如:cms管理员可以删除商品而app用户不可以)
+        $cachedata['scope']=ScopeEnum::User;
+//        $cachedata['scope']=11;
         //将准备好的数据返回
         return $cachedata;
     }
