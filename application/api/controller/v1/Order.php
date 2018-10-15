@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 
 use app\api\controller\BaseController;
 use app\api\validate\OrderParamCheck;
+use app\api\service\UserToken as Tokenservice;
 
 class Order extends BaseController
 {
@@ -22,7 +23,9 @@ class Order extends BaseController
     public function CreateOrder(){
         (new OrderParamCheck())->goCheck();
         //用户选择商品，将选择的商品信息提交到订单api--参数：商品id、商品数量
-        
+        $products=input('post.products/a');//获取数组加/a
+        //获取用户uid
+        $uid=Tokenservice::getCurrentUid();
         //接收到选择的商品信息检查提交的商品的库存量
         //​	有库存
         //​		将订单数据存入数据库，下单成功
