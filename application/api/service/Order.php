@@ -135,7 +135,7 @@ class Order
         $snap['snapAddress']=json_encode($this->getUserAddress());
         $snap['snapShowname']=$this->dataproducts[0]['name'];
         $snap['snapShowimg']=$this->dataproducts[0]['main_img_url'];
-    
+        
     
     
     }
