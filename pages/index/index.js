@@ -19,7 +19,9 @@ Page({
           code: res.code
         }
         app.httpPost(url, data).then(function (re) {
-          console.log(re.data)
+          if(re.data.code==1){
+            wx.setStorageSync('token', re.data.token)
+          }
         })
       },
       fail: function () {}
@@ -30,6 +32,20 @@ Page({
 
   },
   pay: function () {
+    var that = this
+    let url = app.config.createorder;
+    let data = {
+      products:[
+        { product_id: 1, count: 2 },
+        { product_id: 2, count: 3 }
+      ]
+    }
+    app.httpPost(url, data).then(function (re) {
+      console.log(re)
+      // if (re.data.code == 1) {
+      //   wx.setStorageSync('token', re.data.token)
+      // }
+    })
 
   },
   send: function () {
