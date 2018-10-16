@@ -13,6 +13,9 @@ use app\api\model\Product;
 use app\api\model\UserAddress;
 use app\exception\OrderException;
 use app\exception\UserException;
+use app\api\model\Order as OrderModel;
+use app\api\model\OrderProduct as OrderProductModel;
+use think\Exception;
 
 class Order
 {
@@ -22,24 +25,33 @@ class Order
     protected $dataproducts;
     //用户uid
     protected $uid;
-    //库存检测
+    /**
+     * 库存检测
+     * */
     public function CheckProductStock($uid,$inproducts){
         //客户端传入的值与数据库获取到的值进行比较
         $this->inproducts=$inproducts;
         $this->uid=$uid;
-        //按照传递的商品id查询商品信息
+        //1、按照传递的商品id查询商品信息
         $this->dataproducts=$this->getDataProducts($inproducts);
-        //验证订单商品库存
+        //2、验证订单商品库存
         $orderState=$this->orderStockState();
         if(!$orderState['pass']){
             //库存检测未通过
             $orderState['order_id']=-1;
             return $orderState;
         }
-        //库存检测通过创建订单
+        //3、库存检测通过创建订单
+        //3-1.创建订单快照
         $orderSnap=$this->snapOrder($orderState);
+        //3-2.创建订单
+        $this->CreatOrder($orderSnap);
+        $orderState['pass']=true;
+        return $orderState;
     }
-    //根据参数查询数据库对应商品信息
+    /**
+     * 根据参数查询数据库对应商品信息
+     */
     public function getDataProducts($inproducts){
         //将参数数组遍历提取商品id
         $pids=[];
@@ -52,11 +64,13 @@ class Order
             ->toArray();//将数据集转化为数组
         return $products;
     }
-    //订单中商品库存检测的状态
+    /**
+     * 订单中商品库存检测的状态
+     */
     private function orderStockState(){
         /*@pass 订单库存检测状态，一组商品中只要有一个商品库存不足则为检测不通过
          *@orderprice 订单总价
-         * @allcount 订单商品总数
+         *@allcount 订单商品总数
          *@pdetailArray 订单中所有商品的信息
          *  */
       $states=[
@@ -79,7 +93,8 @@ class Order
         }
         return $states;
     }
-    /*数据库中商品状态、商品库存状态
+    /**
+     * 数据库中商品状态、商品库存状态
      * @$pid 参数中商品id
      * @$count 商品数量
      * @$products 数据库中商品信息
@@ -117,7 +132,8 @@ class Order
         }
         return $detailitem;
     }
-    /*创建订单快照
+    /**
+     * 创建订单快照
      *@$orderState 订单状态(订单库存检测状态，订单总价，订单商品总数，订单中所有商品的信息)
      * */
     private function snapOrder($orderState){
@@ -135,11 +151,15 @@ class Order
         $snap['snapAddress']=json_encode($this->getUserAddress());
         $snap['snapShowname']=$this->dataproducts[0]['name'];
         $snap['snapShowimg']=$this->dataproducts[0]['main_img_url'];
-        
-    
-    
+        //多个不同商品时显示不同
+        if(count($this->dataproducts)>1){
+            $snap['snapShowname'].='等';
+        }
+        return $snap;
+
     }
-    /*查找用户地址
+    /**
+     * 查找用户地址
      * */
     private function getUserAddress(){
         $address=UserAddress::where('user_id','=',$this->uid)->find();
@@ -150,5 +170,66 @@ class Order
             ]);
         }
         return $address->toArray();//将对象转为数组
+    }
+    /**
+     * 创建订单
+     * */
+    private function CreatOrder($snap){
+        try{
+            //生成订单号
+            $orderno=$this::makeOrderno();
+            $ordermodel=new OrderModel();
+            //数据表字段赋值
+            $ordermodel->user_id=$this->uid;
+            $ordermodel->order_no=$orderno;
+            $ordermodel->total_price=$snap['orderPrice'];
+            $ordermodel->snap_img=$snap['snapShowimg'];
+            $ordermodel->snap_name=$snap['snapShowname'];
+            $ordermodel->total_count=$snap['totalCount'];
+            $ordermodel->snap_items=json_encode($snap['pstates']);//数组序列化
+            $ordermodel->snap_address=$snap['snapAddress'];
+            //订单保存到表中
+            $ordermodel->save();
+            //订单-产品中间表数据添加
+            $orderId=$ordermodel->id;
+            $ordercreatetime=$ordermodel->create_time;
+            //将orderid加入客户端传入的数组中
+            foreach ($this->inproducts as &$pro){
+                $pro['order_id']=$orderId;
+            }
+            $orderproduct=new OrderProductModel();
+            //订单-产品中间表数据保存
+            $orderproduct->saveAll($this->inproducts);
+            return [
+                'order_no'=>$orderno,
+                'order_id'=>$orderId,
+                'create_time'=>$ordercreatetime
+            ];
+        }catch (Exception $ex){
+            throw $ex;
+        }
+    }
+    /**
+     * 生成订单号(唯一、不重复)
+     * 当前年-2018对应的字母.当前月16进制的大写.当前天.当前时间戳后5位.当前微秒时间戳第2位开始取5个.两位0-99的随机数
+     * intval() 用于获取变量的整数值
+     * strtoupper() 把字符串转换为大写
+     * dechex() 把十进制转换为十六进制。
+     * substr() 返回字符串的一部分。如果 start 参数是负数且 length 小于或等于 start，则 length 为 0
+     * start必需。规定在字符串的何处开始。
+     *      正数 - 在字符串的指定位置开始;
+     *      负数 - 在从字符串结尾开始的指定位置开始;
+     *      0 - 在字符串中的第一个字符处开始
+     * length可选。规定被返回字符串的长度。
+     *      默认是直到字符串的结尾。
+     *      正数 - 从 start 参数所在的位置返回的长度
+     *      负数 - 从字符串末端返回的长度
+     * sprintf() 把格式化的字符串写入变量中
+     *  %02d 在%符号处，插入最小宽度为2的包含正负号的十进制数（负数、0、正数）
+     */
+    public static function makeOrderno(){
+        $yearCode=['A','B','C','D','E','F','G','H','J'];
+        $orderno=$yearCode[intval(date('Y'))-2018].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
+        return $orderno;
     }
 }
