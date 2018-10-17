@@ -15,6 +15,7 @@ use app\exception\OrderException;
 use app\exception\UserException;
 use app\api\model\Order as OrderModel;
 use app\api\model\OrderProduct as OrderProductModel;
+use think\Db;
 use think\Exception;
 
 class Order
@@ -45,7 +46,7 @@ class Order
         //3-1.创建订单快照
         $orderSnap=$this->snapOrder($orderState);
         //3-2.创建订单
-        $this->CreatOrder($orderSnap);
+        $orderState=self::CreatOrder($orderSnap);
         $orderState['pass']=true;
         return $orderState;
     }
@@ -175,9 +176,12 @@ class Order
      * 创建订单
      * */
     private function CreatOrder($snap){
+        //使用事务保证数据一致性
+        Db::startTrans();
         try{
             //生成订单号
             $orderno=$this::makeOrderno();
+            //1
             $ordermodel=new OrderModel();
             //数据表字段赋值
             $ordermodel->user_id=$this->uid;
@@ -197,15 +201,18 @@ class Order
             foreach ($this->inproducts as &$pro){
                 $pro['order_id']=$orderId;
             }
+            //2
             $orderproduct=new OrderProductModel();
             //订单-产品中间表数据保存
             $orderproduct->saveAll($this->inproducts);
+            Db::commit();
             return [
                 'order_no'=>$orderno,
                 'order_id'=>$orderId,
                 'create_time'=>$ordercreatetime
             ];
         }catch (Exception $ex){
+            Db::rollback();
             throw $ex;
         }
     }

@@ -17,7 +17,7 @@ class OrderParamCheck extends BaseValidate
       'products'=>'CheckProducts'
     ];
     //对参数中商品id\数量验证
-    protected $singerule=[
+    protected $singeRule=[
         'product_id'=>'require|Isidint',
         'count'=>'require|Isidint'
     ];
@@ -37,11 +37,13 @@ class OrderParamCheck extends BaseValidate
         foreach ($values as $va){
             $this->CheckProduct($va);
         }
+        //循环验证通过后返回true
+        return true;
     }
     //验证商品id、商品数量
     protected function CheckProduct($value){
-        $evalidate=new BaseValidate($this->singerule);
-        $result=$evalidate->check($value);
+        $validate=new BaseValidate($this->singeRule);
+        $result=$validate->check($value);
         if(!$result){
             throw new ParamExcepotion([
                 'msg'=>'订单参数中商品id或商品数量错误'
