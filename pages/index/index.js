@@ -43,11 +43,22 @@ Page({
     }
     app.httpPost(url, data).then(function (re) {
       console.log(re)
-      // if (re.data.code == 1) {
-      //   wx.setStorageSync('token', re.data.token)
-      // }
+      if (re.data.pass ) {
+        wx.setStorageSync('ordre_id', re.data.order_id);
+        that.wxpreorder(re.data.order_id);
+      }
     })
-
+  },
+  wxpreorder: function (order_id){
+    var that = this
+    let url = app.config.prepay;
+    let data = {
+      id: Number(order_id)
+    }
+    app.httpPost(url, data).then(function (re) {
+      console.log(re)
+      
+    })
   },
   send: function () {
 
