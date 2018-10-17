@@ -36,8 +36,9 @@ Page({
     let url = app.config.createorder;
     let data = {
       products:[
-        { product_id: 1, count: 2 },
-        { product_id: 2, count: 3 }
+        { product_id: 3, count: 2 },
+        { product_id: 2, count: 3 },
+        { product_id: 4, count: 1 }
       ]
     }
     app.httpPost(url, data).then(function (re) {
