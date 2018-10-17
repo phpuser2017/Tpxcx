@@ -90,4 +90,16 @@ class Token
             throw new TokenException();
         }
     }
+    //操作合法性检测(用户不能操作其他用户的数据)
+    public static function ValidetOperation($checkedUid){
+        if(!$checkedUid){
+            throw new Exception('操作合法性检测必须传入一个被检查的uid');
+        }
+        $CurrentUid=self::getCurrentUid();
+        //检测订单的用户和token对应用户是否一致
+        if($checkedUid==$CurrentUid){
+            return true;
+        }
+        return false;
+    }
 }

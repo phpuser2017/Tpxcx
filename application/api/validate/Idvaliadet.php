@@ -15,6 +15,6 @@ class Idvaliadet extends BaseValidate
         'id' => 'require|Isidint'
     ];
     protected $message=[
-        'id'=>'值为必须值且必须为整数'
+        'id'=>'值为必须,且必须为整数'
     ];
 }

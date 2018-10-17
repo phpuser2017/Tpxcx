@@ -50,6 +50,16 @@ class Order
         $orderState['pass']=true;
         return $orderState;
     }
+    public function PayCheckOrderStock($orderid){
+        //根据订单id查询用户传入的参数
+        $indata=OrderProductModel::where('order_id','=',$orderid)->select();
+        $this->inproducts=$indata;
+        //根据参数查询数据库数据
+        $this->dataproducts=$this->getDataProducts($indata);
+        //进行库存查询对比
+        $orders_state=$this->orderStockState();
+        return $orders_state;
+    }
     /**
      * 根据参数查询数据库对应商品信息
      */

@@ -33,7 +33,7 @@ class Order extends BaseController
         $order=new OrderService();
         $states=$order->CheckProductStock($uid,$products);
         return json($states);
-        //​		再次检测库存，库存正常则调用微信支付
+        //​		再次检测库存，库存正常则调用微信支付 接口 Pay
         //​		在调用微信支付至微信支付返回结果间再次检测库存
         //      根据微信支付结果对库存量进行操作
         //​		成功：减少库存，
