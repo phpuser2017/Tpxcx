@@ -64,7 +64,7 @@ class Pay
         $WxOrderData->SetTotal_fee($totalprice*100);//订单总金额
         $WxOrderData->SetBody('Tp5小程序');//商品简单描述
         $WxOrderData->SetOpenid($useropenid);//用户标识，微信用户在商户对应appid下的唯一标识
-        $WxOrderData->SetNotify_url('http://qq.com');//异步接收微信支付结果通知的回调地址(通知url必须为外网可访问的url，不能携带参数)。
+//        $WxOrderData->SetNotify_url('http://qq.com');//异步接收微信支付结果通知的回调地址(通知url必须为外网可访问的url，不能携带参数)。sh
         //获取微信预支付订单
         return $this->getWxPreOrder($WxOrderData);
     }
@@ -79,7 +79,34 @@ class Pay
             Log::record($wxOrder,'error');
             Log::record('微信预支付订单获取失败','error');
         }
-        return 'wxpay123';
+        //将返回的预支付prepay_id写入对应订单
+        $this->recordPrepayid($wxOrder);
+        //生成返回客户端的支付参数+签名
+        $backdata=$this->PaydataCreate($wxOrder);
+        return $backdata;
+    }
+    /**
+     * 微信服务器返回的预支付prepay_id写入对应订单
+     * */
+    private function recordPrepayid($wxOrder){
+        OrderModel::where('id','=',$this->orderId)
+            ->update(['prepay_id'=>$wxOrder['prepay_id']]);
+    }
+    /**
+     * 生成返回客户端的支付参数+签名
+     * */
+    private function PaydataCreate($wxOrder){
+        $jsPaydata=new \WxPayJsApiPay();
+        $jsPaydata->SetAppid(config('wxconfig.appid'));//支付所需appid
+        $jsPaydata->SetTimeStamp((string)time());//时间戳
+        $rand=md5(time().mt_rand(0,1000));
+        $jsPaydata->SetNonceStr($rand);//随机字符串
+        $jsPaydata->SetPackage('prepay_id='.$wxOrder['prepay_id']);//统一下单接口返回的 prepay_id 参数值
+        $jsPaydata->SetSignType('md5');//签名算法
+        $sige=$jsPaydata->MakeSign();//生成签名
+        $BackJsParam=$jsPaydata->GetValues();//从参数对象中获取参数数组
+        $BackJsParam['paySign']=$sige;//将签名加入参数数组中
+        return $BackJsParam;
     }
     /**
      *对orderid进行业务逻辑检测
