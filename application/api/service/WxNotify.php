@@ -10,6 +10,7 @@ namespace app\api\service;
 
 use app\api\model\Product;
 use app\enum\OrderStateEnum;
+use think\Db;
 use think\Exception;
 use think\Loader;
 use app\api\model\Order as OrderModel;
@@ -31,10 +32,11 @@ class WxNotify extends \WxPayNotify
     {
         //result_code  业务结果（SUCCESS/FAIL）
         if($objData['result_code']=='SUCCESS'){
+            Db::startTrans();
             try{
                 //支付成功 检查库存量、更新订单状态status、库存减少
                 $oderNo=$objData['out_trade_no'];
-                $order=OrderModel::where('order_no','=',$oderNo)->find();
+                $order=OrderModel::where('order_no','=',$oderNo)->lock(true)->find();
                 if($order->status==1){
                     $orderService=new OrderService();
                     //检测库存
@@ -52,11 +54,16 @@ class WxNotify extends \WxPayNotify
                         $this->updateOrderstatus($this->id,false);
                     }
                 }
+                Db::commit();
                 return true;
             }catch (Exception $ex){
+                Db::rollback();
                 Log::error($ex);
                 return false;
             }
+        }else{
+            //支付失败，给微信服务器返回true使之停止异步回调
+            return true;
         }
     }
     /**

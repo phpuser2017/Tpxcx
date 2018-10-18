@@ -13,7 +13,7 @@ return[
      'appid'=>'wx201197f96cb080f4',
     'secret'=>'bad365e82a9c93d80b45df97b07c71ba',*/
     'loginurl'=>'https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code',
-    'notify_url'=>'http://qq.com',
+    'notify_url'=>$_SERVER['SERVER_NAME'].'api/v1/pay/wxpaynotify',
     'shopmchid'=>'1875997610',
     'shopkey'=>'33f123413d9b6658d88d2e104bad4c7f'
 ];

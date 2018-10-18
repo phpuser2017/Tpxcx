@@ -10,6 +10,7 @@ namespace app\api\controller\v1;
 
 
 use app\api\controller\BaseController;
+use app\api\service\WxNotify;
 use app\api\validate\Idvaliadet;
 use app\api\service\Pay as PayService;
 class Pay extends BaseController
@@ -34,5 +35,7 @@ class Pay extends BaseController
         //2、更新订单状态status
         //3、库存减少
         //成功，给微信服务器返回正确响应；失败，给微信服务器返回错误响应
+        $wxpaynotify=new WxNotify();
+        $wxpaynotify->Handle();
     }
 }
