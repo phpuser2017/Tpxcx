@@ -56,8 +56,20 @@ Page({
       id: Number(order_id)
     }
     app.httpPost(url, data).then(function (re) {
-      console.log(re)
-      
+      var pre=re.data
+      wx.requestPayment({
+        'timeStamp': pre.timeStamp,
+        'nonceStr': pre.nonceStr,
+        'package': pre.package,
+        'signType': 'MD5',
+        'paySign': pre.paySign,
+        'success': function (res) {
+          console.log(res)
+        },
+        'fail': function (res) {
+          console.log(res)
+        }
+      })
     })
   },
   send: function () {
