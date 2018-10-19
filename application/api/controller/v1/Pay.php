@@ -38,4 +38,21 @@ class Pay extends BaseController
         $wxpaynotify=new WxNotify();
         $wxpaynotify->Handle();
     }
+    /**
+     * 调试支付回调使用
+     * */
+   /* public function redirectNotify(){
+        //1、检查库存量
+        //2、更新订单状态status
+        //3、库存减少
+        //成功，给微信服务器返回正确响应；失败，给微信服务器返回错误响应
+        $wxpaynotify=new WxNotify();
+        $wxpaynotify->Handle();
+    }
+    public function ReceiveNotify(){
+        //访问请求的原始数据的只读流,获取微信服务器返回的xml数据
+        $xmlData=file_get_contents('php://input');
+        //将数据转发到回调处理方法
+        $result=curl_post($_SERVER['SERVER_NAME'].'api/v1/pay/wxpaynotify?XDEBUG_SESSION_START=13408',$xmlData,['Content-Type:text']);
+    }*/
 }

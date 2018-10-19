@@ -13,12 +13,15 @@ use app\api\controller\BaseController;
 use app\api\service\Order as OrderService;
 use app\api\service\UserToken as Tokenservice;
 use app\api\validate\OrderParamCheck;
+use app\api\validate\PageParamValidate;
+use app\api\model\Order as OrderModel;
 
 class Order extends BaseController
 {
     //只要用户可以创建订单
     protected $beforeActionList=[
-        'NeedUser'=>['only'=>'CreateOrder']
+        'NeedUser'=>['only'=>'CreateOrder'],
+        'CheckBaseScope'=>['only'=>'getBriefOrders']
     ];
     //创建订单
     public function CreateOrder(){
@@ -38,6 +41,28 @@ class Order extends BaseController
         //      根据微信支付结果对库存量进行操作
         //​		成功：减少库存，
         //​	无库存
-        
+    }
+    /**
+     * 我的订单[管理员、用户都可以访问，基本权限]
+     * @page 页数
+     * @len 每页显示几条数据
+     * */
+    public function getBriefOrders($page=1,$len=15){
+        (new PageParamValidate())->goCheck();
+        //获取用户id
+        $uid=Tokenservice::getCurrentUid();
+        //查询用户订单快照
+        $paginateorders=OrderModel::getSnapOrder($uid,$page,$len);
+        if($paginateorders->isEmpty()){
+            return json([
+                'data'=>[],
+                'nowpage'=>$paginateorders->getCurrentPage()
+            ]);
+        }
+        $ordresdata=$paginateorders->hidden(['snap_items','snap_address','prepay_id'])->toArray();//对象转数组
+        return json([
+            'data'=>$ordresdata,
+            'nowpage'=>$paginateorders->getCurrentPage()
+        ]);
     }
 }

@@ -3,6 +3,7 @@ require_once "WxPay.Exception.php";
 require_once "WxPay.Config.Interface.php";
 require_once "WxPay.Config.php";
 require_once "WxPay.Data.php";
+require_once "WxPay.Notify.php";
 
 /**
  * 
