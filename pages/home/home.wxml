@@ -1,0 +1,32 @@
+<!--pages/home/hone.wxml-->
+<import src="../tpls/products/products-tpl.wxml"/>
+<view class='container'>
+  <swiper indicator-dots='true' autoplay='true' class='swiper'>
+    <block wx:for="{{banners}}" wx:key='key'>
+      <swiper-item class="banner-item" bindtap="toproduct" data-keyword="{{item.key_word}}">
+        <image mode='aspectFill' class='item-img' src="{{item.img.url}}"></image>
+      </swiper-item>
+    </block>
+  </swiper>
+  <view class="home-main">
+        <!--主题精选-->
+        <view class="home-main-theme">
+            <view class="home-main-header">精选主题</view>
+            <view class="theme-box">
+                <block wx:for="{{thems}}" wx:key='key'>
+                    <view wx:if="{{index==2}}" class="theme-item big" bindtap="totheme" data-themeid="{{item.id}}" data-name="{{item.name}}">
+                        <image src="{{item.topicimg.url}}"></image>
+                    </view>
+                    <view wx:else class="theme-item" bindtap="totheme" data-themeid="{{item.id}}" data-name="{{item.name}}">
+                        <image src="{{item.topicimg.url}}"></image>
+                    </view>
+                </block>
+            </view>
+        </view>
+        <!--单品首发-->
+        <view class="home-main-products">
+            <view class="home-main-header">最近新品</view>
+            <template is="products" data="{{productsArr:newproducts}}"/>
+        </view>
+    </view>
+</view>
