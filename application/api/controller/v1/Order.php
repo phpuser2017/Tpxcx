@@ -12,16 +12,18 @@ namespace app\api\controller\v1;
 use app\api\controller\BaseController;
 use app\api\service\Order as OrderService;
 use app\api\service\UserToken as Tokenservice;
+use app\api\validate\Idvaliadet;
 use app\api\validate\OrderParamCheck;
 use app\api\validate\PageParamValidate;
 use app\api\model\Order as OrderModel;
+use app\exception\OrderException;
 
 class Order extends BaseController
 {
     //只要用户可以创建订单
     protected $beforeActionList=[
         'NeedUser'=>['only'=>'CreateOrder'],
-        'CheckBaseScope'=>['only'=>'getBriefOrders']
+        'CheckBaseScope'=>['only'=>'getBriefOrders,OrderDetails']
     ];
     //创建订单
     public function CreateOrder(){
@@ -64,5 +66,18 @@ class Order extends BaseController
             'data'=>$ordresdata,
             'nowpage'=>$paginateorders->getCurrentPage()
         ]);
+    }
+    /**
+     * 订单详情
+     *
+     * */
+    public function OrderDetails($id){
+        (new Idvaliadet())->goCheck();
+        $orderdata=OrderModel::get($id);
+        if(!$orderdata){
+            throw new OrderException();
+        }else{
+            return json($orderdata->hidden(['prepay_id']));
+        }
     }
 }

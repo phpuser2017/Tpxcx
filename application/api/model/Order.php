@@ -27,4 +27,21 @@ class Order extends BaseModel
            ->paginate($len,true,['page'=>$page]);
        return $pagdata;
     }
+    /**
+     * 读取器将数据库中json字符串转为json对象
+     * */
+    public function getSnapItemsAttr($value){
+        if(empty($value)){
+            return null;
+        }else{
+            return json_decode($value);
+        }
+    }
+    public function getSnapAddressAttr($value){
+        if(empty($value)){
+            return null;
+        }else{
+            return json_decode($value);
+        }
+    }
 }

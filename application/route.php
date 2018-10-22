@@ -50,6 +50,8 @@ Route::post('api/:version/addressedit','api/:version.Address/EditAddress');//新
 //订单
 Route::post('api/:version/createorder','api/:version.Order/CreateOrder');//创建订单
 Route::post('api/:version/getbrieforder','api/:version.Order/getBriefOrders');//获取我的订单[快照]
+Route::get('api/:version/orderdetails/:id','api/:version.Order/OrderDetails');//订单详情
+
 //支付
 Route::post('api/:version/pay/prepay','api/:version.Pay/PrePayOrder');//预支付
 Route::post('api/:version/pay/wxpaynotify','api/:version.Pay/ReceiveNotify');//微信支付回调
