@@ -7,7 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    transClassArr: ['tanslate0', 'tanslate1', 'tanslate2', 'tanslate3', 'tanslate4', 'tanslate5'],
+    transClassArr: ['tanslate0', 'tanslate1', 'tanslate2', 'tanslate3', 'tanslate4', 'tanslate5'],//分类切换的样式
     currentMenuIndex: 0,
     loadingHidden: false,
   },
@@ -24,6 +24,7 @@ Page({
       that.setData({
         categorys: res
       })
+      //默认显示第一个分类及下属商品
       categorymodel.ProductData(res[0].id,(data)=>{
         var dataObj= {
           procucts: data,
@@ -41,17 +42,17 @@ Page({
   /*切换分类*/
   changeCategory: function (event) {
     var index = categorymodel.getBindvalu(event, 'index'),
-      id = categorymodel.getBindvalu(event, 'id')
+        id = categorymodel.getBindvalu(event, 'id')
     this.setData({
       currentMenuIndex: index
     });
-
-    //如果数据是第一次请求
+    //如果数据不是第一次请求再去访问api
     if (!this.isLoadedData(index)) {
       var that = this;
-      categorymodel.ProductData(id, (data) => {
+      //点击分类获取商品后存在data中，下次访问直接从data中获取
+      that.getProductsByCategory(id, (data) => {
         that.setData(
-          that.getDataObjForBind(index, data)
+          that.getDataTapCatgroy(index, data)
         );
       });
     }
@@ -63,7 +64,8 @@ Page({
     }
     return false;
   },
-  getDataObjForBind: function (index, data) {
+  //按照分类点击传递商品分类显示对应商品
+  getDataTapCatgroy: function (index, data) {
     var obj = {},
       arr = [0, 1, 2, 3, 4, 5],
       baseData = this.data.categorys[index];
@@ -71,14 +73,14 @@ Page({
       if (item == arr[index]) {
         obj['categoryInfo' + item] = {
           procucts: data,
-          topImgUrl: baseData.img.url,
+          topImgUrl: baseData.topicimg.url,
           title: baseData.name
         };
         return obj;
       }
     }
   },
-
+  //点击分类获取商品方法封装
   getProductsByCategory: function (id, callback) {
     categorymodel.ProductData(id, (data) => {
       callback && callback(data);

@@ -7,16 +7,17 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loadingHidden: false,
-    countsArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    productCounts: 1,
+    loadingHidden: false,//加载中
+    countsArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],//显示商品可选择范围
+    productCounts: 1,//默认选择商品数量
+    infoIndex: 0,//详情
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var id=options.keyword
+    var id=options.id
     this.setData({
       id:id
     })
@@ -38,10 +39,10 @@ Page({
   },
 
   //切换详情面板
-  onTabsItemTap: function (event) {
+  infochange: function (event) {
     var index = productmodel.getBindvalu(event, 'index');
     this.setData({
-      currentTabsIndex: index
+      infoIndex: index
     });
   },
 

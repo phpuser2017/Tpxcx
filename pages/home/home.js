@@ -7,7 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    loadingHidden: false
   },
 
   /**
@@ -16,7 +16,7 @@ Page({
   onLoad: function (options) {
     this._getbanner()
   },
-  _getbanner:function(){
+  _getbanner: function (callback){
     var id=1;
     // var banners=homemodel.getBanners(id,this.CallBack);
     //轮播图
@@ -28,16 +28,18 @@ Page({
     //主题
     homemodel.geThems((res) => {
       this.setData({
-        thems: res
+        thems: res,
+        loadingHidden: true
       })
     });
-    //最新视频
+    //最新商品
     var count=6
     homemodel.geProducts(count,(res) => {
       this.setData({
         newproducts: res
       })
     });
+    callback && callback();
   },
   // CallBack:function(res){
   //   console.log(res)
@@ -46,7 +48,7 @@ Page({
   toproduct:function(e){
     var keyword = homemodel.getBindvalu(e,'keyword');
     wx.navigateTo({
-      url: '../product/product'+'?keyword='+keyword,
+      url: '../product/product'+'?id='+keyword,
     })
   },
   //点击主题
