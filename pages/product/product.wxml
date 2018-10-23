@@ -1,6 +1,6 @@
 <view class="container detail-container" hidden="{{!loadingHidden}}">
     <view class="detail-header-box">
-        <view class="fixed-btns-box" bindtap="onCartTap">
+        <view class="fixed-btns-box" bindtap="tocart">
             <view class="fiexd-cart {{isShake?'animate':''}}">
                 <image src="../../imgs/icon/cart@top.png"></image>
                 <view wx:if="{{cartTotalCounts>0}}">{{cartTotalCounts}}</view>
@@ -21,7 +21,7 @@
                 </picker>
             </view>
             <view class="middle-border"></view>
-            <view class="add-cart-btn {{product.stock==0?'disabled':''}}" bindtap="onAddingToCartTap">
+            <view class="add-cart-btn {{product.stock==0?'disabled':''}}" bindtap="addCart">
                 <text>加入购物车</text>
                 <image class="cart-icon" src="../../imgs/icon/cart.png"></image>
                 <image id="small-top-img" class="small-top-img {{isFly?'animate':''}}"

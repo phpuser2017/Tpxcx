@@ -1,6 +1,8 @@
 // pages/product/product.js
 import { ProductModel } from 'product-model.js';
 var productmodel = new ProductModel();
+import {CartModel} from '../cart/cart-model.js';
+var cartmodel=new CartModel();
 Page({
 
   /**
@@ -23,12 +25,21 @@ Page({
     })
     this._loaddata()
   },
+  //获取商品详情
   _loaddata:function(){
     productmodel.ProductDetail(this.data.id,(res) => {
       this.setData({
+        //购物车内商品数量
+        cartTotalCounts: cartmodel.getCartShopCounts(false),
         product: res,
         loadingHidden: true
       })
+    })
+  },
+  //跳转购物车
+  tocart:function(){
+    wx.switchTab({
+      url: '../cart/cart',
     })
   },
   //选择购买数目
@@ -44,6 +55,58 @@ Page({
     this.setData({
       infoIndex: index
     });
+  },
+  //加入购物车
+  addCart:function(e){
+    //添加商品
+    this.preCart()
+    //添加商品动画
+    this._flyToCartEffect(e)
+    //实时更新购物车数量
+    this.setData({
+      cartTotalCounts: cartmodel.getCartShopCounts(false)
+    })
+  },
+  //商品添加数组组装
+  preCart:function(){
+    var addproduct={}
+    var keys=['id','name','main_img_url','price']
+    for(var key in this.data.product){
+      if(keys.indexOf(key)>=0){
+         addproduct[key]=this.data.product[key]
+      }
+    }
+    //调用购物车模型进行商品添加
+    cartmodel.add(addproduct,this.data.productCounts)
+  },
+  /*加入购物车动效*/
+  _flyToCartEffect: function (events) {
+    //获得当前点击的位置，距离可视区域左上角
+    var touches = events.touches[0];
+    var diff = {
+      x: '25px',
+      y: 25 - touches.clientY + 'px'
+    },
+      style = 'display: block;-webkit-transform:translate(' + diff.x + ',' + diff.y + ') rotate(350deg) scale(0)';  //移动距离
+    this.setData({
+      isFly: true,
+      translateStyle: style
+    });
+    var that = this;
+    setTimeout(() => {
+      that.setData({
+        isFly: false,
+        translateStyle: '-webkit-transform: none;',  //恢复到最初状态
+        isShake: true,
+      });
+      setTimeout(() => {
+        var counts = that.data.cartTotalCounts + that.data.productCounts;
+        that.setData({
+          isShake: false,
+          cartTotalCounts: counts
+        });
+      }, 200);
+    }, 1000);
   },
 
   /**
