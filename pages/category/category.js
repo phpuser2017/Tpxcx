@@ -49,6 +49,9 @@ Page({
     //如果数据不是第一次请求再去访问api
     if (!this.isLoadedData(index)) {
       var that = this;
+      that.setData({
+        loadingHidden: false,
+      })
       //点击分类获取商品后存在data中，下次访问直接从data中获取
       that.getProductsByCategory(id, (data) => {
         that.setData(
@@ -76,6 +79,9 @@ Page({
           topImgUrl: baseData.topicimg.url,
           title: baseData.name
         };
+        this.setData({
+          loadingHidden: true,          
+        })
         return obj;
       }
     }
