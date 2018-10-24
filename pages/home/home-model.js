@@ -18,7 +18,7 @@ class HomeModel extends Base{
     this.Request(params);
   }
   //主题
-  geThems(CallBack){
+  getThems(CallBack){
     var params = {
       url: config.thems+'?ids=1,2,3',
       sCallback: function (res) {

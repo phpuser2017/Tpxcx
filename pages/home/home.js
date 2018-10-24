@@ -26,7 +26,7 @@ Page({
       })
     });
     //主题
-    homemodel.geThems((res) => {
+    homemodel.getThems((res) => {
       this.setData({
         thems: res,
         loadingHidden: true

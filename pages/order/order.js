@@ -1,6 +1,7 @@
 // pages/order/order.js
 import {CartModel} from '../cart/cart-model.js';
 import {AddressModel} from '../utils/address-model.js';
+import {OrderModel} from '../order/order-model.js';
 var cartmodel=new CartModel();
 var addressmodel=new AddressModel();
 Page({
@@ -16,9 +17,17 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that=this
     var ordrePrice = options.orderprice,
         frompage = options.from;
     var orderProducts = cartmodel.StorageCartData(true)
+    //获取地址
+    addressmodel.getAddress((res)=>{
+      that.setData({
+        adress:res
+      })
+    })
+    
     this.setData({
       orderproducts: orderProducts,
       ordreprice: ordrePrice,
@@ -30,6 +39,7 @@ Page({
     var that=this
     wx.chooseAddress({
       success:function(res){
+        console.log(res)
         var address={
           name:res.userName,
           mobile:res.telNumber,
@@ -38,6 +48,31 @@ Page({
         that.setData({
           adress:address
         })
+        addressmodel.addAddress(res,(flag)=>{
+          if(!flag){
+            that.showtips('操作提示','地址信息更新失败')
+          }
+        })
+      }
+    })
+  },
+  /**
+   * 提示信息
+   * @title 弹出框标题
+   * @content 弹出框内容
+   * @flag 是否跳转到我的页面
+   */
+  showtips:function(title,content,flag){
+    wx.showModal({
+      title: title,
+      content: content,
+      showCancel:false,
+      success:function(re){
+        if(flag){
+          wx.switchTab({
+            url: '../my/my',
+          })
+        }
       }
     })
   },
