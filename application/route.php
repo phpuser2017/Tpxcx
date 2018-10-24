@@ -43,10 +43,13 @@ Route::get('api/:version/producty/:id','api/:version.Product/productdetail');//�
     //http://tp/api/v1/producty/2
     Route::get('/:id','api/:version.Product/productdetail');//点击商品商品详情
 });*/
+//token
 //http://tp/api/v1/token/user
 Route::post('api/:version/token/user','api/:version.Token/getToken');//获取token
+Route::post('api/:version/token/check','api/:version.Token/checkToken');//校验token
 //http://tp/api/v1/addressedit
-Route::post('api/:version/addressedit','api/:version.Address/EditAddress');//新增编辑地址
+Route::post('api/:version/addressedit','api/:version.Address/EditAddress');//新增、编辑地址
+Route::get('api/:version/getaddress','api/:version.Address/GetAddress');//获取地址
 //订单
 Route::post('api/:version/createorder','api/:version.Order/CreateOrder');//创建订单
 Route::post('api/:version/getbrieforder','api/:version.Order/getBriefOrders');//获取我的订单[快照]

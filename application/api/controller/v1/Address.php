@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 
 use app\api\controller\BaseController;
 use app\api\model\User;
+use app\api\model\UserAddress;
 use app\api\service\Token as TokenService;
 use app\api\validate\AddressEdit;
 use app\exception\SuccessMsg;
@@ -20,8 +21,25 @@ class Address extends BaseController
 {
     //前置操作验证基础权限
     protected $beforeActionList=[
-        'CheckBaseScope'=>['only'=>'EditAddress']
+        'CheckBaseScope'=>['only'=>'GetAddress,EditAddress']
     ];
+    /*
+     * 获取地址
+     * */
+    public function GetAddress(){
+        $uid = TokenService::getCurrentUid();
+        $userAddress = UserAddress::where('user_id', $uid)->find();
+        if(!$userAddress){
+            throw new UserException([
+                'msg' => '用户地址不存在',
+                'errorCode' => 60001
+            ]);
+        }
+        return $userAddress;
+    }
+    /**
+     * 新增或者编辑地址
+     * */
     public function EditAddress(){
         $addressValidate=new AddressEdit();
         $addressValidate->goCheck();

@@ -12,7 +12,7 @@ class AddressEdit extends BaseValidate
 {
     protected $rule=[
         'name'=>'require|Isnotempty',
-        'mobile'=>'require|IsMobile',
+//        'mobile'=>'require|IsMobile',
         'province'=>'require|Isnotempty',
         'city'=>'require|Isnotempty',
         'country'=>'require|Isnotempty',

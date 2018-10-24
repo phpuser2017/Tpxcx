@@ -102,4 +102,16 @@ class Token
         }
         return false;
     }
+    /**
+     *校验token
+     * */
+    public static function ValidateToken($token){
+        //检测传入需要被校验的token是否存在于缓存中
+        $tokendata=Cache::get($token);
+        if($tokendata){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
