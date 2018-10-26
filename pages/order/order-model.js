@@ -20,6 +20,42 @@ class OrderModel extends Base{
         that.updataStorage(true)
       }
     }
+    this.Request(allparams)
+  }
+  /**
+   * 支付
+   * @callback(param)
+   *  0:商品库存不足无法支付
+   *  1:支付失败或者取消
+   *  2:支付成功
+   */
+  gopay(orderid,callback){
+    var params={
+      url: config.pay,
+      type: 'POST',
+      data: { id: orderid },
+      sCallback: function (res) {
+        if(data.timeStamp){
+          //服务器返回支付参数，可以支付
+          wx.requestPayment({
+            'timeStamp': data.timeStamp.toString(),
+            'nonceStr': data.nonceStr,
+            'package': data.package,
+            'signType': data.signType,
+            'paySign': data.paySign,
+             success: function (res) {
+               callback && callback(1)
+            },
+            fail:function(){
+              callback && callback(2)
+            }
+            })
+        }else{
+          callback && callback(0)
+        }
+      }
+    }
+    this.Request(params)
   }
   /**
   * 缓存更新
