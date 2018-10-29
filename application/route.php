@@ -52,7 +52,7 @@ Route::post('api/:version/addressedit','api/:version.Address/EditAddress');//新
 Route::get('api/:version/getaddress','api/:version.Address/GetAddress');//获取地址
 //订单
 Route::post('api/:version/createorder','api/:version.Order/CreateOrder');//创建订单
-Route::post('api/:version/getbrieforder','api/:version.Order/getBriefOrders');//获取我的订单[快照]
+Route::post('api/:version/getbrieforder','api/:version.Order/getBriefOrders');//我的订单[快照]
 Route::get('api/:version/orderdetail/:id','api/:version.Order/OrderDetails');//订单详情
 
 //支付
