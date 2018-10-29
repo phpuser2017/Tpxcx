@@ -6,6 +6,7 @@
     "pages/category/category",
     "pages/cart/cart",
     "pages/order/order",
+    "pages/payresult/payresult",
     "pages/my/my"
   ],
   "window": {

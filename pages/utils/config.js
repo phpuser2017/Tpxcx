@@ -11,5 +11,8 @@ export default{
   addaddress:'addressedit',//新增、修改地址
   getaddress:'getaddress',//获取地址
   createorder:'createorder',//创建订单
-  pay:'prepay'//支付
+  pay:'pay/prepay',//支付
+  orderdetail:'orderdetail/',//订单快照
+  getbrieforder:'getbrieforder',//我的订单
+  switchpay:false,//是否开启支付
 }

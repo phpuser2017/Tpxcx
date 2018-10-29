@@ -4,35 +4,76 @@ import {AddressModel} from '../utils/address-model.js';
 import {OrderModel} from '../order/order-model.js';
 var cartmodel=new CartModel();
 var addressmodel=new AddressModel();
+var ordermodel = new OrderModel();
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    id:null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that = this
+    var frompage = options.from
+    if (frompage=='cart'){
+      that._fromcart(options.orderprice)
+    }else{
+      that._frommy(options.id)
+    }
+  },
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    //支付成功或失败页面返回或者查看订单获取订单数据
+    if (this.data.id) {
+      this._frommy(this.data.id)
+    }
+  },
+  //来自购物车的跳转
+  _fromcart: function (orderprice){
     var that=this
-    var ordrePrice = options.orderprice,
-        frompage = options.from;
     var orderProducts = cartmodel.StorageCartData(true)
     //获取地址
-    addressmodel.getAddress((res)=>{
+    addressmodel.getAddress((res) => {
       that.setData({
-        adress:res
+        address: res
       })
     })
-    
     this.setData({
       orderproducts: orderProducts,
-      ordreprice: ordrePrice,
-      orderStatus:0
+      ordreprice: orderprice,
+      orderStatus: 0
     })
+  },
+  //来自我的页面
+  _frommy:function(id){
+    if (id) {
+      var that = this;
+      //获取订单信息
+      ordermodel.getOrderInfoById(id, (data) => {
+        that.setData({
+          orderStatus: data.status,//订单状态
+          orderproducts: data.snap_items,//订单快照
+          ordreprice: data.total_price,//订单总价
+          basicInfo: {
+            orderTime: data.create_time,//订单创建时间
+            orderNo: data.order_no//订单号
+          },
+        });
+        // 快照地址- 组装地址信息
+        var addressInfo = data.snap_address;
+        addressInfo.totalDetail = addressmodel.setAddress(addressInfo);
+        that.setData({
+          address: addressInfo
+        })
+      });
+    }
   },
   //添加地址
   addaddress:function(){
@@ -46,7 +87,7 @@ Page({
           totalDetail: addressmodel.setAddress(res)
         }
         that.setData({
-          adress:address
+          address:address
         })
         addressmodel.addAddress(res,(flag)=>{
           if(!flag){
@@ -77,17 +118,18 @@ Page({
     })
   },
   /**
-   * 支付
+   * 支付方法
    */
   pay:function(){
-    if (!this.data.address){
+    var that=this;
+    if (!that.data.address){
       that.showtips('下单提示', '请填写您的收货地址')
       return;
     }
-    if(this.orderStatus){
-      this._makeorderpay()
+    if(that.data.orderStatus==0){
+      that._makeorderpay()
     }else{
-      this._hasorderpay()
+      that._hasorderpay()
     }
   },
   /**
@@ -95,13 +137,12 @@ Page({
    */
   _makeorderpay:function(){
     var makeorderinfo=[],
-        orderproducts=this.data.orderProducts,
-        ordermodel=new OrderModel();
+      orderproducts = this.data.orderproducts; 
     //遍历购物车中商品组成下单需要的数组[id、counts]
     for(let i=0;i<orderproducts.length;i++){
         makeorderinfo.push({
-          productid:orderproducts[i].id,
-          productcounts:orderproducts[i].counts
+          product_id:orderproducts[i].id,
+          count:orderproducts[i].counts
         })
     }
     var that = this
@@ -124,7 +165,7 @@ Page({
    */
   _gopay:function(id){
     var that=this
-    oredrermodel.gopay(id,(paystatus)=>{
+    ordermodel.gopay(id,(paystatus)=>{
       if(paystatus!=0){
         //商品库存足够且下单成功，将购物车中下单的商品删除
         that.deletefromcart()
@@ -141,7 +182,7 @@ Page({
    */
   deletefromcart:function(){
     var productids=[],
-        cartproducts=this.data.orderProducts;
+      cartproducts = this.data.orderproducts;
     for(let i=0;i<cartproducts.length;i++){
       productids.push(cartproducts[i].id)
     }
@@ -193,13 +234,6 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
 
   },
 

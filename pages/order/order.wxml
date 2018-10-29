@@ -21,20 +21,20 @@
 
   <!--地址-->
   <view class="order-address-info {{orderStatus!=0?'disabled':''}}" bindtap="addaddress">
-    <block wx:if="{{adress}}">
+    <block wx:if="{{address}}">
       <view class="contact-box">
         <view>
           <view class="contact">
               <view>
                 <image src="../../imgs/icon/user.png"></image>
-                <text class="val">{{adress.name}}</text>
+                <text class="val">{{address.name}}</text>
               </view>
               <view class="mobile-box">
                 <image src="../../imgs/icon/mobile.png"></image>
-                <text  class="val">{{adress.mobile}}</text>
+                <text  class="val">{{address.mobile}}</text>
               </view>
           </view>
-          <view class="detail">{{adress.totalDetail}}</view>
+          <view class="detail">{{address.totalDetail}}</view>
         </view>
         <view class="contact-icon" wx:if="{{orderStatus==0}}">
             <image src="../../imgs/icon/arrow@right.png"></image>
@@ -71,6 +71,6 @@
     <view class="total-account">
       付款合计：￥{{ordreprice}}
     </view>
-    <view wx:if="{{orderStatus<=1}}" class="pay {{!addressInfo?'disabled':''}}" ontap="pay">去付款</view>
+    <view wx:if="{{orderStatus<=1}}" class="pay {{!address?'disabled':''}}" bindtap="pay">去付款</view>
   </view>
 </view>

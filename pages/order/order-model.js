@@ -16,8 +16,9 @@ class OrderModel extends Base{
       type:'POST',
       data: { products:params},
       sCallback:function(res){
-        callback && callback(data)
-        that.updataStorage(true)
+        callback && callback(res)
+        //生成订单添加标记
+        that.updateneworder(true)
       }
     }
     this.Request(allparams)
@@ -57,10 +58,40 @@ class OrderModel extends Base{
     }
     this.Request(params)
   }
+
+  //获取订单信息[详情]
+  getOrderInfoById(id,callback){
+    var that=this
+    var params = {
+      url: config.orderdetail+id,
+      sCallback: function (res) {
+        callback && callback(res)
+      }
+    }
+    this.Request(params)
+  }
   /**
-  * 缓存更新
-  */
-  updataStorage(data) {
+   * 获取所有订单
+   */
+  getMyoedres(pageindex,callback){
+    var that = this
+    var params = {
+      url: config.getbrieforder,
+      type: 'POST',
+      data: {page: pageindex},
+      sCallback: function (res) {
+        callback && callback(res)
+      }
+    }
+    this.Request(params)
+  }
+  /*是否有新的订单*/
+  hasNewOrder() {
+    var flag = wx.getStorageSync(this._storagekey);
+    return flag == true;
+  }
+  //生成、取消新订单
+  updateneworder(data){
     wx.setStorageSync(this._storagekey, data)
   }
 

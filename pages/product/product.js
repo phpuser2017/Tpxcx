@@ -60,12 +60,8 @@ Page({
   addCart:function(e){
     //添加商品
     this.preCart()
-    //添加商品动画
+    //添加商品动画+实时更新购物车数量
     this._flyToCartEffect(e)
-    //实时更新购物车数量
-    this.setData({
-      cartTotalCounts: cartmodel.getCartShopCounts(false)
-    })
   },
   //商品添加数组组装
   preCart:function(){
@@ -100,7 +96,7 @@ Page({
         isShake: true,
       });
       setTimeout(() => {
-        var counts = that.data.cartTotalCounts + that.data.productCounts;
+        var counts = cartmodel.getCartShopCounts(false);
         that.setData({
           isShake: false,
           cartTotalCounts: counts

@@ -1,51 +1,39 @@
-// pages/theme/theme.js
-import { ThemeModel} from 'theme-model.js';
-var thememodel = new ThemeModel();
+// pages/payresult/payresult.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    loadingHidden: false
-  },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  },
   onLoad: function (options) {
-    var themeid=options.themeid;
-    var name = options.name;
+    //获取支付结果、订单id、跳转来源
     this.setData({
-      themeid:themeid,
-      name:name
-    })
-    this._loaddata()
-    
+      payResult: options.ispayok,
+      id: options.id,
+      from: options.from
+    });
   },
-  _loaddata:function(){
-    thememodel.ThemeData(this.data.themeid, (res) => {
-      this.setData({
-        themedata: res,
-        loadingHidden: true
+  //查看订单
+  viewOrder: function () {
+    if (this.data.from == 'my') {
+      wx.redirectTo({
+        url: '../order/order?from=order&id=' + this.data.id
+      });
+    } else {
+      //返回上一级
+      wx.navigateBack({
+        delta: 1
       })
-    })
-  },
-  //商品详情
-  toproduct: function (event) {
-    var id = thememodel.getBindvalu(event, 'keyword');
-    wx.navigateTo({
-      url: '../product/product?id=' + id
-    })
+    }
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    wx.setNavigationBarTitle({
-      title: this.data.name,
-    })
+
   },
 
   /**
