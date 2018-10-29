@@ -13,10 +13,10 @@ class PageParamValidate extends BaseValidate
 {
     protected $rule=[
         'page'=>'Isidint',
-        'size'=>'Isidint'
+        'len'=>'Isidint'
     ];
     protected $message=[
         'page'=>'分页参数必须为正整数',
-        'size'=>'分每页数据数量必须为正整数'
+        'len'=>'分每页数据数量必须为正整数'
     ];
 }

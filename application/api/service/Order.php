@@ -99,7 +99,7 @@ class Order
                 $states['pass']=false;
             }
             $states['orderprice']+=$detailitem['totalprice'];//订单总价
-            $states['allcount']+=$detailitem['pcount'];//订单中商品总数量
+            $states['allcount']+=$detailitem['counts'];//订单中商品总数量
             array_push($states['pdetailArray'],$detailitem);
         }
         return $states;
@@ -114,8 +114,10 @@ class Order
         $detailitem=[
             'id'=>null,//商品id
             'haveStock'=>false,//是否由库存
-            'pcount'=>0,//提交参数中的商品数量
+            'counts'=>0,//提交参数中的商品数量
+            'price'=>0,//商品单价
             'name'=>'',//商品名称
+            'main_img_url'=>'',//商品图片
             'totalprice'=>0//提交的该商品的总价
         ];
         $pindex=-1;//商品对应的数据库商品信息集中的序号，默认值
@@ -137,7 +139,9 @@ class Order
             if($product['stock']-$pcount>=0){
                 $detailitem['haveStock']=true;
             }
-            $detailitem['pcount']=$pcount;
+            $detailitem['counts']=$pcount;
+            $detailitem['price']=$product['price'];
+            $detailitem['main_img_url']=$product['main_img_url'];
             $detailitem['name']=$product['name'];
             $detailitem['totalprice']=$product['price']*$pcount;
         }
