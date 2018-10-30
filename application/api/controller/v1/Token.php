@@ -9,7 +9,9 @@
 namespace app\api\controller\v1;
 
 
+use app\api\service\AppToken;
 use app\api\service\UserToken;
+use app\api\validate\AppTokenValidate;
 use app\api\validate\CodeCheck;
 use app\exception\ParamExcepotion;
 use app\api\service\Token as TokenService;
@@ -36,5 +38,18 @@ class Token
         }
         $check=TokenService::ValidateToken($token);
         return json(['checktoken'=>$check]);
+    }
+    /**
+     * cms 登陆,第三方应用令牌获取
+     * @ ac 账号
+     * @ se 密码
+     */
+    public function getAppToken($ac='',$se=''){
+        (new AppTokenValidate())->goCheck();
+        $app=new AppToken();
+        $token=$app->get($ac,$se);
+        return json([
+            'token'=>$token
+        ]);
     }
 }

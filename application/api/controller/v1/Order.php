@@ -17,6 +17,7 @@ use app\api\validate\OrderParamCheck;
 use app\api\validate\PageParamValidate;
 use app\api\model\Order as OrderModel;
 use app\exception\OrderException;
+use app\exception\SuccessMsg;
 
 class Order extends BaseController
 {
@@ -78,6 +79,39 @@ class Order extends BaseController
             throw new OrderException();
         }else{
             return json($orderdata->hidden(['prepay_id']));
+        }
+    }
+    /**
+     * cms获取全部订单简要信息（分页）
+     * @page 页数
+     * @len 每页显示几条数据
+     */
+    public function getOrder($page=1, $len = 20){
+        (new PageParamValidate())->goCheck();
+        $pagdata = OrderModel::getOrderByPage($page, $len);
+        if ($pagdata->isEmpty())
+        {
+            return json([
+                'nowpage' => $pagdata->getCurrentPage(),
+                'data' => []
+            ]);
+        }
+        $data = $pagdata->hidden(['snap_items', 'snap_address'])->toArray();
+        return json([
+            'nowpage' => $pagdata->getCurrentPage(),
+            'data' => $data
+        ]);
+    }
+    /**
+     * 发货发送微信模板消息
+     * @ id 订单号（id）
+     */
+    public function SendShopSendMsg($id){
+        (new Idvaliadet())->goCheck();
+        $order=new OrderService();
+        $success=$order->SendShop($id);
+        if($success){
+            return new SuccessMsg();
         }
     }
 }

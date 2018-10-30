@@ -11,6 +11,7 @@ namespace app\api\service;
 
 use app\api\model\Product;
 use app\api\model\UserAddress;
+use app\enum\OrderStateEnum;
 use app\exception\OrderException;
 use app\exception\UserException;
 use app\api\model\Order as OrderModel;
@@ -252,5 +253,29 @@ class Order
         $yearCode=['A','B','C','D','E','F','G','H','J'];
         $orderno=$yearCode[intval(date('Y'))-2018].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
         return $orderno;
+    }
+    /**
+     * 发货
+     */
+    public function SendShop($orderid, $JumpPath = '')
+    {
+        $order = OrderModel::where('id', '=', $orderid)->find();
+        //传递订单哈皮对应的订单是否存在
+        if (!$order) {
+            throw new OrderException();
+        }
+        //检测是否支付
+        if ($order->status != OrderStateEnum::Paid) {
+            throw new OrderException([
+                'msg' => '还没付款呢，想干嘛？或者你已经更新过订单了，不要再刷了',
+                'errorcode' => 80002,
+                'code' => 403
+            ]);
+        }
+        //更新订单状态未已发货
+        $order->status = OrderStateEnum::Delivered;
+        $order->save();
+        $message = new SendWxMessage();
+        return $message->SendInfo($order, $JumpPath);
     }
 }

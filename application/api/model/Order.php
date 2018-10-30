@@ -44,4 +44,11 @@ class Order extends BaseModel
             return json_decode($value);
         }
     }
+    /**
+     * cms查询所有订单
+     */
+    public static function getOrderByPage($page=1, $len=20){
+        $pagData = self::order('create_time desc')->paginate($len, true, ['page' => $page]);
+        return $pagData ;
+    }
 }
