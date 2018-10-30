@@ -24,6 +24,9 @@ Page({
       that._fromcart(options.orderprice)
     }else{
       that._frommy(options.id)
+      that.setData({
+        id: options.id
+      })
     }
   },
   /**
@@ -228,7 +231,7 @@ Page({
    * 已有订单进行支付
    */
   _hasorderpay:function(){
-
+    this._gopay(this.data.id)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
