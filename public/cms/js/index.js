@@ -117,7 +117,7 @@ $(function(){
             $tips=$('.global-tips'),
             $p=$tips.find('p');
         var params={
-            url:'order/delivery',
+            url:'sendshop',
             type:'put',
             data:{id:id},
             tokenFlag:true,

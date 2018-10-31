@@ -9,6 +9,8 @@
 namespace app\api\service;
 
 
+use think\Exception;
+
 class WxMessage
 {
     private $sendurl;
@@ -40,7 +42,7 @@ class WxMessage
             'color' => $this->color,
             'emphasis_keyword' => $this->emphasisKeyword
         ];
-        $result = curl_post($this->sendurl, $data);
+        $result = curl_post($this->sendurl, json_encode($data),'');
         $result = json_decode($result, true);
         if ($result['errcode'] == 0) {
             return true;

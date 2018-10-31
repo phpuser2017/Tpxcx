@@ -26,6 +26,13 @@ function curl_get($url,&$httpcode=0){
     curl_close($cu);
     return $fileconnect;
 }
+
+/**
+ * @param $url
+ * @param $data string
+ * @param $header
+ * @return bool|mixed
+ */
 function curl_post($url, $data,$header){
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
