@@ -45,13 +45,6 @@ class Token
      * @ se 密码
      */
     public function getAppToken($ac='',$se=''){
-        //解决跨域访问
-        //允许所有域封为*
-        header('Access-Control-Allow-Origin: *');
-        //访问时允许携带的键名
-        header("Access-Control-Allow-Headers: token,Origin, X-Requested-With, Content-Type, Accept");
-        //允许访问的方法
-        header('Access-Control-Allow-Methods: GET');
         (new AppTokenValidate())->goCheck();
         $app=new AppToken();
         $token=$app->get($ac,$se);
